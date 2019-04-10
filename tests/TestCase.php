@@ -124,4 +124,10 @@ class TestCase extends BaseTestCase
 
         return $name;
     }
+
+    public function expectException(string $exception): void
+    {
+        $this->markTestSkipped('Running No Leaks');
+        parent::expectException($exception);
+    }
 }

@@ -102,6 +102,8 @@ class AnalyzedMethodTest extends \Psalm\Tests\TestCase
             $unaffected_analyzed_methods,
             $codebase->analyzer->getAnalyzedMethods()
         );
+
+        echo ' ';
     }
 
     /**
