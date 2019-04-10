@@ -367,6 +367,7 @@ class FileAnalyzer extends SourceAnalyzer implements StatementsSource
      */
     public static function clearCache()
     {
+        Type::clearCache();
         IssueBuffer::clearCache();
         FileManipulationBuffer::clearCache();
         FunctionLikeAnalyzer::clearCache();

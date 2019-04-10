@@ -69,6 +69,11 @@ class TestCase extends BaseTestCase
         $this->project_analyzer->setPhpVersion('7.3');
     }
 
+    public function tearDown() : void
+    {
+        FileAnalyzer::clearCache();
+    }
+
     /**
      * @param string $file_path
      * @param string $contents
