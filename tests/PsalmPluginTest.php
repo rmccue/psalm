@@ -23,7 +23,7 @@ class PsalmPluginTest extends TestCase
     /** @var Application */
     private $app;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->plugin_list = $this->prophesize(PluginList::class);
         $this->plugin_list_factory = $this->prophesize(PluginListFactory::class);

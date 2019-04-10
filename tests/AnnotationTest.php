@@ -134,13 +134,13 @@ class AnnotationTest extends TestCase
     }
 
     /**
-     * @expectedException        \Psalm\Exception\CodeException
-     * @expectedExceptionMessage InvalidScalarArgument
-     *
-     * @return                   void
+     * @return void
      */
     public function testPhpStormGenericsInvalidArgument()
     {
+        $this->expectException(\Psalm\Exception\CodeException::class);
+        $this->expectExceptionMessage('InvalidScalarArgument');
+
         Config::getInstance()->allow_phpstorm_generics = true;
 
         $this->addFile(
@@ -159,13 +159,13 @@ class AnnotationTest extends TestCase
     }
 
     /**
-     * @expectedException        \Psalm\Exception\CodeException
-     * @expectedExceptionMessage PossiblyInvalidMethodCall
-     *
-     * @return                   void
+     * @return void
      */
     public function testPhpStormGenericsNoTypehint()
     {
+        $this->expectException(\Psalm\Exception\CodeException::class);
+        $this->expectExceptionMessage('PossiblyInvalidMethodCall');
+
         Config::getInstance()->allow_phpstorm_generics = true;
 
         $this->addFile(
@@ -181,13 +181,13 @@ class AnnotationTest extends TestCase
     }
 
     /**
-     * @expectedException        \Psalm\Exception\CodeException
-     * @expectedExceptionMessage InvalidParamDefault
-     *
-     * @return                   void
+     * @return void
      */
     public function testInvalidParamDefault()
     {
+        $this->expectException(\Psalm\Exception\CodeException::class);
+        $this->expectExceptionMessage('InvalidParamDefault');
+
         $this->addFile(
             'somefile.php',
             '<?php
@@ -224,13 +224,13 @@ class AnnotationTest extends TestCase
     }
 
     /**
-     * @expectedException        \Psalm\Exception\CodeException
-     * @expectedExceptionMessage InvalidParamDefault
-     *
-     * @return                   void
+     * @return void
      */
     public function testInvalidTypehintParamDefaultButAllowedInConfig()
     {
+        $this->expectException(\Psalm\Exception\CodeException::class);
+        $this->expectExceptionMessage('InvalidParamDefault');
+
         Config::getInstance()->add_param_default_to_docblock_type = true;
 
         $this->addFile(

@@ -17,7 +17,7 @@ class ConfigTest extends TestCase
     /**
      * @return void
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass() : void
     {
         self::$config = new TestConfig();
 
@@ -33,7 +33,7 @@ class ConfigTest extends TestCase
     /**
      * @return void
      */
-    public function setUp()
+    public function setUp() : void
     {
         FileAnalyzer::clearCache();
         $this->file_provider = new Provider\FakeFileProvider();
@@ -596,13 +596,13 @@ class ConfigTest extends TestCase
     }
 
     /**
-     * @expectedException        \Psalm\Exception\ConfigException
-     * @expectedExceptionMessage This element is not expected
      *
-     * @return                   void
+     * @return void
      */
     public function testImpossibleIssue()
     {
+        $this->expectExceptionMessage('This element is not expected');
+        $this->expectException(\Psalm\Exception\ConfigException::class);
         $this->project_analyzer = $this->getProjectAnalyzerWithConfig(
             Config::loadFromXML(
                 dirname(__DIR__),
@@ -621,13 +621,13 @@ class ConfigTest extends TestCase
     }
 
     /**
-     * @expectedException        \Psalm\Exception\CodeException
-     * @expectedExceptionMessage MissingReturnType
      *
-     * @return                   void
+     * @return void
      */
     public function testRequireVoidReturnTypeExists()
     {
+        $this->expectExceptionMessage('MissingReturnType');
+        $this->expectException(\Psalm\Exception\CodeException::class);
         $this->project_analyzer = $this->getProjectAnalyzerWithConfig(
             TestConfig::loadFromXML(
                 dirname(__DIR__),
@@ -859,13 +859,13 @@ class ConfigTest extends TestCase
     }
 
     /**
-     * @expectedException  \Psalm\Exception\CodeException
-     * @expectedExceptionMessage  ForbiddenCode
      *
      * @return void
      */
     public function testForbiddenEchoFunctionViaFunctions()
     {
+        $this->expectExceptionMessage('ForbiddenCode');
+        $this->expectException(\Psalm\Exception\CodeException::class);
         $this->project_analyzer = $this->getProjectAnalyzerWithConfig(
             TestConfig::loadFromXML(
                 dirname(__DIR__),
@@ -890,13 +890,13 @@ class ConfigTest extends TestCase
     }
 
     /**
-     * @expectedException  \Psalm\Exception\CodeException
-     * @expectedExceptionMessage  ForbiddenEcho
      *
      * @return void
      */
     public function testForbiddenEchoFunctionViaFlag()
     {
+        $this->expectExceptionMessage('ForbiddenEcho');
+        $this->expectException(\Psalm\Exception\CodeException::class);
         $this->project_analyzer = $this->getProjectAnalyzerWithConfig(
             TestConfig::loadFromXML(
                 dirname(__DIR__),
@@ -942,13 +942,13 @@ class ConfigTest extends TestCase
     }
 
     /**
-     * @expectedException  \Psalm\Exception\CodeException
-     * @expectedExceptionMessage  ForbiddenCode
      *
-     * @return  void
+     * @return void
      */
     public function testForbiddenVarExportFunction()
     {
+        $this->expectExceptionMessage('ForbiddenCode');
+        $this->expectException(\Psalm\Exception\CodeException::class);
         $this->project_analyzer = $this->getProjectAnalyzerWithConfig(
             TestConfig::loadFromXML(
                 dirname(__DIR__),
@@ -974,13 +974,13 @@ class ConfigTest extends TestCase
     }
 
     /**
-     * @expectedException  \Psalm\Exception\CodeException
-     * @expectedExceptionMessage  InvalidCatch
      *
      * @return void
      */
     public function testValidThrowInvalidCatch()
     {
+        $this->expectExceptionMessage('InvalidCatch');
+        $this->expectException(\Psalm\Exception\CodeException::class);
         $this->project_analyzer = $this->getProjectAnalyzerWithConfig(
             TestConfig::loadFromXML(
                 dirname(__DIR__),
@@ -1026,13 +1026,13 @@ class ConfigTest extends TestCase
     }
 
     /**
-     * @expectedException  \Psalm\Exception\CodeException
-     * @expectedExceptionMessage  InvalidThrow
      *
      * @return void
      */
     public function testInvalidThrowValidCatch()
     {
+        $this->expectExceptionMessage('InvalidThrow');
+        $this->expectException(\Psalm\Exception\CodeException::class);
         $this->project_analyzer = $this->getProjectAnalyzerWithConfig(
             TestConfig::loadFromXML(
                 dirname(__DIR__),
