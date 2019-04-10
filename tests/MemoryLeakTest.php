@@ -11,7 +11,7 @@ class MemoryLeakTest extends TestCase
     public function providerValidCodeParse()
     {
         return [
-            'SKIPPED-classNoExtends' => [
+            'classNoExtends' => [
                 '<?php
                     class A {}
                     class B {}',

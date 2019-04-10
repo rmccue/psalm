@@ -954,7 +954,43 @@ class AnnotationTest extends TestCase
     public function providerInvalidCodeParse()
     {
         return [
-            'invalidReturn' => [
+            'invalidClassMethodReturn' => [
+                '<?php
+                    class C {
+                        /**
+                         * @return $thus
+                         */
+                        public function barBar() {
+                            return $this;
+                        }
+                    }',
+                'error_message' => 'MissingDocblockType',
+            ],
+            'invalidClassMethodReturnClass' => [
+                '<?php
+                    class C {
+                        /**
+                         * @return 1
+                         */
+                        public static function barBar() {
+                            return 1;
+                        }
+                    }',
+                'error_message' => 'InvalidDocblock',
+            ],
+            'invalidInterfaceMethodReturnBrackets' => [
+                '<?php
+                    class C {
+                        /**
+                         * @return []
+                         */
+                        public static function barBar() {
+                            return [];
+                        }
+                    }',
+                'error_message' => 'InvalidDocblock',
+            ],
+            'invalidInterfaceMethodReturn' => [
                 '<?php
                     interface I {
                         /**
@@ -964,7 +1000,7 @@ class AnnotationTest extends TestCase
                     }',
                 'error_message' => 'MissingDocblockType',
             ],
-            'invalidReturnClass' => [
+            'invalidInterfaceMethodReturnClass' => [
                 '<?php
                     interface I {
                         /**
@@ -974,7 +1010,7 @@ class AnnotationTest extends TestCase
                     }',
                 'error_message' => 'InvalidDocblock',
             ],
-            'invalidReturnBrackets' => [
+            'invalidInterfaceMethodReturnBrackets' => [
                 '<?php
                     interface I {
                         /**
