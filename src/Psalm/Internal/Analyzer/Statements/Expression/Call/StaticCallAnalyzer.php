@@ -345,7 +345,13 @@ class StaticCallAnalyzer extends \Psalm\Internal\Analyzer\Statements\Expression\
                     }
                 }
 
-                if (!$codebase->methods->methodExists($method_id, $context->calling_method_id)
+                if (!$codebase->methods->methodExists(
+                    $method_id,
+                    $context->calling_method_id,
+                    $codebase->collect_references ? new CodeLocation($source, $stmt->name) : null,
+                    null,
+                    $statements_analyzer->getFilePath()
+                )
                     || !MethodAnalyzer::isMethodVisible(
                         $method_id,
                         $context,
@@ -354,7 +360,10 @@ class StaticCallAnalyzer extends \Psalm\Internal\Analyzer\Statements\Expression\
                 ) {
                     if ($codebase->methods->methodExists(
                         $fq_class_name . '::__callStatic',
-                        $context->calling_method_id
+                        $context->calling_method_id,
+                        $codebase->collect_references ? new CodeLocation($source, $stmt->name) : null,
+                        null,
+                        $statements_analyzer->getFilePath()
                     )) {
                         $class_storage = $codebase->classlike_storage_provider->get($fq_class_name);
 

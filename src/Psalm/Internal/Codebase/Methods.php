@@ -101,7 +101,8 @@ class Methods
         $method_id,
         $calling_method_id = null,
         CodeLocation $code_location = null,
-        StatementsSource $source = null
+        StatementsSource $source = null,
+        string $file_path = null
     ) {
         // remove trailing backslash if it exists
         $method_id = preg_replace('/^\\\\/', '', $method_id);
@@ -137,22 +138,34 @@ class Methods
                 return true;
             }
 
-            if ($calling_method_id) {
-                $method_id_lc = strtolower($method_id);
+            $method_id_lc = strtolower($method_id);
 
-                if ($method_id_lc !== $declaring_method_id_lc
-                    && $class_storage->user_defined
-                    && isset($class_storage->potential_declaring_method_ids[$method_name])
-                ) {
-                    foreach ($class_storage->potential_declaring_method_ids[$method_name] as $potential_id => $_) {
+            if ($method_id_lc !== $declaring_method_id_lc
+                && $class_storage->user_defined
+                && isset($class_storage->potential_declaring_method_ids[$method_name])
+            ) {
+                foreach ($class_storage->potential_declaring_method_ids[$method_name] as $potential_id => $_) {
+                    if ($calling_method_id) {
                         $this->file_reference_provider->addCallingMethodReferenceToClassMember(
                             $calling_method_id,
                             $potential_id
                         );
+                    } elseif ($file_path) {
+                        $this->file_reference_provider->addFileReferenceToClassMember(
+                            $file_path,
+                            $potential_id
+                        );
                     }
-                } else {
+                }
+            } else {
+                if ($calling_method_id) {
                     $this->file_reference_provider->addCallingMethodReferenceToClassMember(
                         $calling_method_id,
+                        $declaring_method_id_lc
+                    );
+                } elseif ($file_path) {
+                    $this->file_reference_provider->addFileReferenceToClassMember(
+                        $file_path,
                         $declaring_method_id_lc
                     );
                 }
@@ -237,6 +250,11 @@ class Methods
             // also store failures in case the method is added later
             $this->file_reference_provider->addCallingMethodReferenceToClassMember(
                 $calling_method_id,
+                strtolower($method_id)
+            );
+        } elseif ($file_path) {
+            $this->file_reference_provider->addFileReferenceToClassMember(
+                $file_path,
                 strtolower($method_id)
             );
         }

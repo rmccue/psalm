@@ -34,9 +34,10 @@ use Psalm\Internal\Provider\FileStorageProvider;
  *
  * @psalm-type  WorkerData = array{
  *     issues: array<int, IssueData>,
- *     file_references: array<string, array<string,bool>>,
+ *     file_references_to_classes: array<string, array<string,bool>>,
+ *     file_references_to_class_members: array<string, array<string,bool>>,
  *     mixed_counts: array<string, array{0: int, 1: int}>,
- *     member_references: array<string, array<string,bool>>,
+ *     method_references_to_class_members: array<string, array<string,bool>>,
  *     analyzed_methods: array<string, array<string, int>>,
  *     file_maps: array<
  *         string,
@@ -236,8 +237,12 @@ class Analyzer
 
                     return [
                         'issues' => IssueBuffer::getIssuesData(),
-                        'file_references' => $file_reference_provider->getAllFileReferences(),
-                        'member_references' => $file_reference_provider->getClassMemberReferences(),
+                        'file_references_to_classes'
+                            => $file_reference_provider->getAllFileReferencesToClasses(),
+                        'file_references_to_class_members'
+                            => $file_reference_provider->getAllFileReferencesToClassMembers(),
+                        'method_references_to_class_members'
+                            => $file_reference_provider->getAllMethodReferencesToClassMembers(),
                         'mixed_counts' => $analyzer->getMixedCounts(),
                         'analyzed_methods' => $analyzer->getAnalyzedMethods(),
                         'file_maps' => $analyzer->getFileMaps(),
@@ -263,11 +268,14 @@ class Analyzer
                     $codebase->file_reference_provider->addIssue($issue_data['file_path'], $issue_data);
                 }
 
-                $codebase->file_reference_provider->addFileReferencesToClass(
-                    $pool_data['file_references']
+                $codebase->file_reference_provider->addFileReferencesToClasses(
+                    $pool_data['file_references_to_classes']
                 );
-                $codebase->file_reference_provider->addCallingMethodReferencesToClassMember(
-                    $pool_data['member_references']
+                $codebase->file_reference_provider->addFileReferencesToClassMembers(
+                    $pool_data['file_references_to_class_members']
+                );
+                $codebase->file_reference_provider->addCallingMethodReferencesToClassMembers(
+                    $pool_data['method_references_to_class_members']
                 );
                 $codebase->file_reference_provider->addClassLocations(
                     $pool_data['class_locations']
@@ -362,7 +370,10 @@ class Analyzer
 
         $diff_map = $statements_provider->getDiffMap();
 
-        $all_referencing_methods = $codebase->file_reference_provider->getClassMemberReferences();
+        $all_referencing_methods = $codebase->file_reference_provider->getAllMethodReferencesToClassMembers();
+        $method_references_to_class_members = $all_referencing_methods;
+        var_dump($method_references_to_class_members);
+        $file_references_to_class_members = $codebase->file_reference_provider->getAllFileReferencesToClassMembers();
         $this->mixed_counts = $codebase->file_reference_provider->getTypeCoverage();
 
         $classlikes = $codebase->classlikes;
@@ -411,6 +422,9 @@ class Analyzer
                         $all_referencing_methods[$member_id],
                         $newly_invalidated_methods
                     );
+
+                    unset($method_references_to_class_members[$member_id]);
+                    unset($file_references_to_class_members[$member_id]);
                 }
 
                 $member_stub = preg_replace('/::.*$/', '::*', $member_id);
@@ -448,6 +462,16 @@ class Analyzer
             $codebase->file_reference_provider->clearExistingFileMapsForFile($file_path);
             $this->setMixedCountsForFile($file_path, [0, 0]);
         }
+
+        var_dump($method_references_to_class_members);
+
+        /**$codebase->file_reference_provider->setCallingMethodReferencesToClassMembers(
+            $method_references_to_class_members
+        );*/
+
+        $codebase->file_reference_provider->setFileReferencesToClassMembers(
+            $file_references_to_class_members
+        );
     }
 
     /**

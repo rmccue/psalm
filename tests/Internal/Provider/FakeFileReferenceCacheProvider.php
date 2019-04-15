@@ -11,7 +11,10 @@ class FakeFileReferenceCacheProvider extends \Psalm\Internal\Provider\FileRefere
     private $cached_file_references;
 
     /** @var ?array */
-    private $cached_method_references;
+    private $cached_method_member_references;
+
+    /** @var ?array */
+    private $cached_file_member_references;
 
     /** @var ?array */
     private $cached_issues;
@@ -44,9 +47,20 @@ class FakeFileReferenceCacheProvider extends \Psalm\Internal\Provider\FileRefere
      * @psalm-suppress MixedAssignment
      * @psalm-suppress MixedTypeCoercion
      */
-    public function getCachedMemberReferences()
+    public function getCachedFileMemberReferences()
     {
-        return $this->cached_method_references;
+        return $this->cached_file_member_references;
+    }
+
+    /**
+     * @return ?array
+     *
+     * @psalm-suppress MixedAssignment
+     * @psalm-suppress MixedTypeCoercion
+     */
+    public function getCachedMethodMemberReferences()
+    {
+        return $this->cached_method_member_references;
     }
 
     /**
@@ -71,9 +85,17 @@ class FakeFileReferenceCacheProvider extends \Psalm\Internal\Provider\FileRefere
     /**
      * @return void
      */
-    public function setCachedMemberReferences(array $method_references)
+    public function setCachedMethodMemberReferences(array $method_references)
     {
-        $this->cached_method_references = $method_references;
+        $this->cached_method_member_references = $method_references;
+    }
+
+    /**
+     * @return void
+     */
+    public function setCachedFileMemberReferences(array $method_references)
+    {
+        $this->cached_file_member_references = $method_references;
     }
 
     /**

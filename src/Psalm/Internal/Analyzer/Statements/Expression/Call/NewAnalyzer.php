@@ -328,7 +328,9 @@ class NewAnalyzer extends \Psalm\Internal\Analyzer\Statements\Expression\CallAna
                 if ($codebase->methods->methodExists(
                     $fq_class_name . '::__construct',
                     $context->calling_method_id,
-                    $context->collect_references ? new CodeLocation($statements_analyzer->getSource(), $stmt) : null
+                    $context->collect_references ? new CodeLocation($statements_analyzer->getSource(), $stmt) : null,
+                    null,
+                    $statements_analyzer->getFilePath()
                 )) {
                     $method_id = $fq_class_name . '::__construct';
 

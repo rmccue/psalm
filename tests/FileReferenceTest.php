@@ -80,10 +80,11 @@ class FileReferenceTest extends TestCase
      *
      * @param string $input_code
      * @param array<string,array<string,bool>> $expected_referenced_members
+     * @param array<string,array<string,bool>> $expected_referenced_files
      *
      * @return void
      */
-    public function testReferencedMethods($input_code, array $expected_referenced_members)
+    public function testReferencedMethods($input_code, array $expected_referenced_members, array $expected_referenced_files)
     {
         $test_name = $this->getTestName();
         if (strpos($test_name, 'SKIPPED-') !== false) {
@@ -98,9 +99,13 @@ class FileReferenceTest extends TestCase
 
         $this->analyzeFile($file_path, $context);
 
-        $referenced_members = $this->project_analyzer->getCodebase()->file_reference_provider->getClassMemberReferences();
+        $referenced_members = $this->project_analyzer->getCodebase()->file_reference_provider->getAllMethodReferencesToClassMembers();
 
         $this->assertSame($expected_referenced_members, $referenced_members);
+
+        $referenced_files = $this->project_analyzer->getCodebase()->file_reference_provider->getAllFileReferencesToClassMembers();
+
+        $this->assertSame($expected_referenced_files, $referenced_files);
     }
 
     /**
@@ -131,7 +136,7 @@ class FileReferenceTest extends TestCase
     }
 
     /**
-     * @return array<string,array{string,array<string,array<string,bool>>}>
+     * @return array<string,array{0: string, 1: array<string,array<string,bool>>, 2: array<string,array<string,bool>>}>
      */
     public function providerReferencedMethods()
     {
@@ -160,7 +165,16 @@ class FileReferenceTest extends TestCase
                         public function foo() : void {
                             new A();
                         }
-                    }',
+                    }
+
+                    class D {
+                        /** @var ?string */
+                        public $foo;
+                        public function __construct() {}
+                    }
+
+                    $d = new D();
+                    $d->foo = "bar";',
                 [
                     'use:A:d7863b8594fe57f85cb8183fe55a6c15' => [
                         'foo\b::__construct' => true,
@@ -182,7 +196,18 @@ class FileReferenceTest extends TestCase
                     'foo\c::foo' => [
                         'foo\b::bar' => true,
                     ],
+                    'foo\d::$foo' => [
+                        'foo\d::__construct' => true,
+                    ],
                 ],
+                [
+                    'foo\d::__construct' => [
+                        '/var/www/somefile.php' => true,
+                    ],
+                    'foo\d::$foo' => [
+                        '/var/www/somefile.php' => true,
+                    ],
+                ]
             ],
             'interpolateClassCalls' => [
                 '<?php
@@ -226,6 +251,7 @@ class FileReferenceTest extends TestCase
                         'foo\d::bat' => true,
                     ],
                 ],
+                [],
             ],
             'constantRefs' => [
                 '<?php
@@ -252,6 +278,7 @@ class FileReferenceTest extends TestCase
                         'foo\c::foo' => true,
                     ],
                 ],
+                [],
             ],
             'staticPropertyRefs' => [
                 '<?php
@@ -283,6 +310,7 @@ class FileReferenceTest extends TestCase
                         'foo\c::foo' => true,
                     ],
                 ],
+                [],
             ],
             'instancePropertyRefs' => [
                 '<?php
@@ -319,6 +347,7 @@ class FileReferenceTest extends TestCase
                         'foo\c::foo' => true,
                     ],
                 ],
+                [],
             ],
         ];
     }

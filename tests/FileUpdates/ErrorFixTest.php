@@ -300,7 +300,7 @@ class ErrorFixTest extends \Psalm\Tests\TestCase
                         namespace Foo;
 
                         trait T {
-                            public function bat() : string {
+                            public function bar() : string {
                                 return "hello";
                             }
                         }',
@@ -324,7 +324,7 @@ class ErrorFixTest extends \Psalm\Tests\TestCase
                             }
                         }',
                 ],
-                'error_counts' => [1, 1, 0],
+                'error_counts' => [1, 0, 0],
             ],
         ];
     }

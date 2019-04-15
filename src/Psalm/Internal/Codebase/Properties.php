@@ -108,6 +108,11 @@ class Properties
                     $context->calling_method_id,
                     strtolower($declaring_property_class) . '::$' . $property_name
                 );
+            } elseif ($source) {
+                $this->file_reference_provider->addFileReferenceToClassMember(
+                    $source->getFilePath(),
+                    strtolower($declaring_property_class) . '::$' . $property_name
+                );
             }
 
             if ($this->collect_references) {
@@ -133,6 +138,11 @@ class Properties
         if ($context && $context->calling_method_id) {
             $this->file_reference_provider->addCallingMethodReferenceToClassMember(
                 $context->calling_method_id,
+                strtolower($fq_class_name) . '::$' . $property_name
+            );
+        } elseif ($source) {
+            $this->file_reference_provider->addFileReferenceToClassMember(
+                $source->getFilePath(),
                 strtolower($fq_class_name) . '::$' . $property_name
             );
         }
