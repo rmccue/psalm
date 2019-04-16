@@ -372,7 +372,6 @@ class Analyzer
 
         $all_referencing_methods = $codebase->file_reference_provider->getAllMethodReferencesToClassMembers();
         $method_references_to_class_members = $all_referencing_methods;
-        var_dump($method_references_to_class_members);
         $file_references_to_class_members = $codebase->file_reference_provider->getAllFileReferencesToClassMembers();
         $this->mixed_counts = $codebase->file_reference_provider->getTypeCoverage();
 
@@ -463,11 +462,9 @@ class Analyzer
             $this->setMixedCountsForFile($file_path, [0, 0]);
         }
 
-        var_dump($method_references_to_class_members);
-
-        /**$codebase->file_reference_provider->setCallingMethodReferencesToClassMembers(
+        $codebase->file_reference_provider->setCallingMethodReferencesToClassMembers(
             $method_references_to_class_members
-        );*/
+        );
 
         $codebase->file_reference_provider->setFileReferencesToClassMembers(
             $file_references_to_class_members

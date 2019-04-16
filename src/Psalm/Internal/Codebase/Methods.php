@@ -246,6 +246,23 @@ class Methods
             return true;
         }
 
+        foreach ($class_storage->parent_classes + $class_storage->used_traits as $potential_future_declaring_fqcln) {
+            $potential_id = strtolower($potential_future_declaring_fqcln) . '::' . $method_name;
+
+            if ($calling_method_id) {
+                // also store failures in case the method is added later
+                $this->file_reference_provider->addCallingMethodReferenceToClassMember(
+                    $calling_method_id,
+                    $potential_id
+                );
+            } elseif ($file_path) {
+                $this->file_reference_provider->addFileReferenceToClassMember(
+                    $file_path,
+                    $potential_id
+                );
+            }
+        }
+
         if ($calling_method_id) {
             // also store failures in case the method is added later
             $this->file_reference_provider->addCallingMethodReferenceToClassMember(
